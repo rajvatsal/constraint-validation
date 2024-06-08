@@ -18,12 +18,16 @@ const passChecks = (() => {
 	return { lowerCase, upperCase, numbers, specialCharacters };
 })();
 
+const checkValidity = {
+	mail: isMailInvalid,
+	zip: isZipCodeInvalid,
+	password: isPasswordInvalid,
+	password_confirm: isPasswordConfirmInvalid,
+};
+
 function showValidityState() {
 	this.classList.add("active");
-	if (this.id === "mail") isMailInvalid();
-	if (this.id === "zip") isZipCodeInvalid();
-	if (this.id === "password") isPasswordInvalid();
-	if (this.id === "password_confirm") isPasswordConfirmInvalid();
+	checkValidity[this.id]();
 }
 
 function capitalizeFirstLetter(str) {
