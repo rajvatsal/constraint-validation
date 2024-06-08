@@ -8,7 +8,11 @@ let password;
 let zip;
 let mail;
 
-const MAIL_REGEX = /[a-zA-Z0-9.]+@[a-z]{2,}\.(com|net|org)/;
+const MAIL_REGEX = {
+	complete: /[a-zA-Z0-9.]+@[a-z]{2,}\.(com|net|org)/,
+	"@": /^[a-zA-Z0-9]+@/,
+	incomplete: /^[a-zA-Z0-9]+@[a-zA-Z]{2,}/,
+};
 const passChecks = (() => {
 	const lowerCase = /^(?=.*[a-z]).*$/;
 	const upperCase = /^(?=.*[A-Z]).*$/;
@@ -70,12 +74,21 @@ function isMailInvalid() {
 	if (mail.validity.valueMissing) {
 		toggleErr(true, err, "■ Required field");
 		isInvalid = true;
-	} else if (!MAIL_REGEX.test(value)) {
-		toggleErr(true, err, "■ Invalid mail");
+	} else if (!MAIL_REGEX["@"].test(value)) {
+		toggleErr(true, err, '■ Doesn\'t have "@" symbol');
 		isInvalid = true;
+	} else if (!MAIL_REGEX.incomplete.test(value)) {
+		toggleErr(true, err, '■ Nothing after "@" symbol');
+		isInvalid = true;
+		mail.setCustomValidity("invalid");
+	} else if (!MAIL_REGEX.complete.test(value)) {
+		toggleErr(true, err, "■ Incomplete Mail");
+		isInvalid = true;
+		mail.setCustomValidity("invalid");
 	} else {
 		toggleErr(false, err);
 		isInvalid = false;
+		mail.setCustomValidity("");
 	}
 
 	return isInvalid;
@@ -88,9 +101,6 @@ function isPasswordInvalid() {
 
 	if (password.validity.valueMissing) {
 		toggleErr(true, err, `${SQUARE} Required field`);
-		isInvalid = true;
-	} else if (password.validity.tooShort) {
-		toggleErr(true, err, `${SQUARE} Password must be 8 characters long`);
 		isInvalid = true;
 	} else if (!passChecks.lowerCase.test(value)) {
 		toggleErr(true, err, `${SQUARE} Password must contain a lower case letter`);
@@ -111,6 +121,9 @@ function isPasswordInvalid() {
 			err,
 			`${SQUARE} Password must contain a special character for example "!$.\[\]"`,
 		);
+		isInvalid = true;
+	} else if (password.validity.tooShort) {
+		toggleErr(true, err, `${SQUARE} Password must be 8 characters long`);
 		isInvalid = true;
 	} else {
 		toggleErr(false, err);
