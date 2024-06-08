@@ -8,6 +8,8 @@ let password;
 let zip;
 let mail;
 
+let formInputs;
+
 const MAIL_REGEX = {
 	complete: /[a-zA-Z0-9.]+@[a-z]{2,}\.(com|net|org)/,
 	"@": /^[a-zA-Z0-9]+@/,
@@ -153,6 +155,10 @@ function isPasswordConfirmInvalid() {
 }
 
 function clickHandlerSubmit(e) {
+	for (const input in formInputs) {
+		formInputs[input].classList.add("active");
+	}
+
 	let validity = true;
 	if (isMailInvalid()) validity = false;
 	if (isZipCodeInvalid()) validity = false;
@@ -222,6 +228,7 @@ export default function init() {
 	zip = document.querySelector("#zip");
 	password = document.querySelector("#password");
 	passConfirm = document.querySelector("#password_confirm");
+	formInputs = { mail, zip, password, passConfirm };
 
 	// add eventListners
 	btnSubmit.addEventListener("click", clickHandlerSubmit);
