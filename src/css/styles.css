@@ -31,14 +31,14 @@ select {
 }
 
 input.active:valid {
-  border: 1px solid var(--clr-semantic-500);
+  border: 2px solid var(--clr-semantic-500);
   background-color: var(--clr-semantic-500);
   outline-color: var(--clr-semantic-500);
   color: var(--clr-semantic-600);
 }
 
 input.active:invalid {
-  border: 1px solid var(--clr-semantic-300);
+  border: 2px solid var(--clr-semantic-300);
   background-color: var(--clr-semantic-300);
   outline-color: var(--clr-semantic-300);
   color: var(--clr-semantic-400);
