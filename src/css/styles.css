@@ -1,0 +1,15 @@
+:root {
+  --clr-semantic-400: red;
+  --ff-200: monospace;
+  --fs-100: 0.8rem;
+}
+
+.err-msg {
+  color: var(--clr-semantic-400);
+  background-color: #ff000024;
+  font-family: var(--ff-200);
+  padding: 3px 3px;
+  border-radius: 4px;
+  display: none;
+  font-size: var(--fs-100);
+}

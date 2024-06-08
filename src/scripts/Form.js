@@ -1,20 +1,14 @@
-import render from "./scripts/Form.js";
-import "./css/styles.css";
-
-render();
+import countries from "./Countries.js";
 
 const SQUARE = "■";
-const btnSubmit = document.querySelector('button[type="submit"]');
 
-// variables for email
+let btnSubmit;
+let passConfirm;
+let password;
+let zip;
+let mail;
+
 const MAIL_REGEX = /[a-zA-Z0-9.]+@[a-z]{2,}\.(com|net|org)/;
-const errorMessage = document.querySelector(".mail .err-msg");
-const mail = document.querySelector(".mail input");
-
-// variables for zipcode
-const zip = document.querySelector("#zip");
-
-//variables for passwword
 const passChecks = (() => {
 	const lowerCase = /^(?=.*[a-z]).*$/;
 	const upperCase = /^(?=.*[A-Z]).*$/;
@@ -23,7 +17,10 @@ const passChecks = (() => {
 
 	return { lowerCase, upperCase, numbers, specialCharacters };
 })();
-const password = document.querySelector("#password");
+
+function capitalizeFirstLetter(str) {
+	return `${str[0].toUpperCase()}${str.slice(1)}`;
+}
 
 function toggleErr(show, element, message) {
 	if (show) {
@@ -36,17 +33,17 @@ function toggleErr(show, element, message) {
 }
 
 function isZipCodeInvalid() {
-	const errElement = document.querySelector("#zip+span");
+	const err = document.querySelector("#zip+span");
 	let isInvalid;
 
 	if (zip.validity.valueMissing) {
-		toggleErr(true, errElement, "■ Required field");
+		toggleErr(true, err, "■ Required field");
 		isInvalid = true;
 	} else if (zip.validity.rangeUnderflow) {
-		toggleErr(true, errElement, `${SQUARE} Cannot be less than 0`);
+		toggleErr(true, err, `${SQUARE} Cannot be less than 0`);
 		isInvalid = true;
 	} else {
-		toggleErr(false, errElement);
+		toggleErr(false, err);
 		isInvalid = false;
 	}
 
@@ -55,16 +52,17 @@ function isZipCodeInvalid() {
 
 function isMailInvalid() {
 	const value = mail.value;
+	const err = document.querySelector(".mail .err-msg");
 	let isInvalid;
 
 	if (mail.validity.valueMissing) {
-		toggleErr(true, errorMessage, "■ Required field");
+		toggleErr(true, err, "■ Required field");
 		isInvalid = true;
 	} else if (!MAIL_REGEX.test(value)) {
-		toggleErr(true, errorMessage, "■ Invalid mail");
+		toggleErr(true, err, "■ Invalid mail");
 		isInvalid = true;
 	} else {
-		toggleErr(false, errorMessage);
+		toggleErr(false, err);
 		isInvalid = false;
 	}
 
@@ -110,7 +108,6 @@ function isPasswordInvalid() {
 	return isInvalid;
 }
 
-const passConfirm = document.querySelector("#password_confirm");
 function isPasswordConfirmInvalid() {
 	const err = document.querySelector("#password_confirm+span");
 	const value = passConfirm.value;
@@ -139,4 +136,68 @@ function clickHandlerSubmit(e) {
 	if (!validity) e.preventDefault();
 }
 
-btnSubmit.addEventListener("click", clickHandlerSubmit);
+const content = `
+  <main>
+    <form class="input-form" action="" method="" novalidate>
+      <fieldset>
+        <legend>Enter details</legend>
+<div class="input-container mail">
+        <label for="mail">Email: </label>
+        <input type="email" id="mail" name="user_mail" value="" required/>
+<span class="err-msg"></span>
+</div>
+<div class="input-container country">
+        <label for="country">Country: </label>
+<span class="err-msg"></span>
+</div>
+<div class="input-container zip">
+        <label for="zip">Zip Code: </label>
+        <input min="0" type="number" id="zip" name="user_zip_code" value="" required/>
+<span class="err-msg"></span>
+</div>
+<div class="input-container pass">
+        <label for="password">Password: </label>
+        <input type="text" id="password" name="user_password" minlength="8" value="" required/>
+<span class="err-msg"></span>
+</div>
+<div class="input-container pass-confirm">
+        <label for="password_confirm">Confirm Password: </label>
+        <input type="text" id="password_confirm" name="user_confirm_password" value="" required/>
+<span class="err-msg"></span>
+</div>
+<button type="submit">Submit</button>
+      </fieldset>
+    </form>
+  </main>
+`;
+
+function render() {
+	document.querySelector("body").insertAdjacentHTML("afterbegin", content);
+
+	// biome-ignore lint/complexity/noForEach: <explanation>
+	countries.forEach((country) => {
+		const option = document.createElement("option");
+		option.value = country;
+		option.textContent = capitalizeFirstLetter(country);
+		select.appendChild(option);
+	});
+
+	const select = document.createElement("select");
+	select.setAttribute("id", "country");
+	document.querySelector(`label[for="country"]`).after(select);
+}
+
+export default function init() {
+	// Add to the dom
+	render();
+
+	// set required variables
+	btnSubmit = document.querySelector('button[type="submit"]');
+	mail = document.querySelector(".mail input");
+	zip = document.querySelector("#zip");
+	password = document.querySelector("#password");
+	passConfirm = document.querySelector("#password_confirm");
+
+	// add eventListners
+	btnSubmit.addEventListener("click", clickHandlerSubmit);
+}
