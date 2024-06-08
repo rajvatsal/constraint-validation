@@ -18,6 +18,14 @@ const passChecks = (() => {
 	return { lowerCase, upperCase, numbers, specialCharacters };
 })();
 
+function showValidityState() {
+	this.classList.add("active");
+	if (this.id === "mail") isMailInvalid();
+	if (this.id === "zip") isZipCodeInvalid();
+	if (this.id === "password") isPasswordInvalid();
+	if (this.id === "password_confirm") isPasswordConfirmInvalid();
+}
+
 function capitalizeFirstLetter(str) {
 	return `${str[0].toUpperCase()}${str.slice(1)}`;
 }
@@ -200,4 +208,9 @@ export default function init() {
 
 	// add eventListners
 	btnSubmit.addEventListener("click", clickHandlerSubmit);
+	// biome-ignore lint/complexity/noForEach: <explanation>
+	document.querySelectorAll("input").forEach((input) => {
+		input.addEventListener("mousedown", showValidityState);
+		input.addEventListener("input", showValidityState);
+	});
 }
