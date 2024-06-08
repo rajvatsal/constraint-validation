@@ -174,6 +174,9 @@ const content = `
 function render() {
 	document.querySelector("body").insertAdjacentHTML("afterbegin", content);
 
+	const select = document.createElement("select");
+	select.setAttribute("id", "country");
+
 	// biome-ignore lint/complexity/noForEach: <explanation>
 	countries.forEach((country) => {
 		const option = document.createElement("option");
@@ -181,9 +184,6 @@ function render() {
 		option.textContent = capitalizeFirstLetter(country);
 		select.appendChild(option);
 	});
-
-	const select = document.createElement("select");
-	select.setAttribute("id", "country");
 	document.querySelector(`label[for="country"]`).after(select);
 }
 
